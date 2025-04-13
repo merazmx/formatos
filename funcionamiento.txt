@@ -1,0 +1,10 @@
+Cómo funciona:
+
+index.html carga la estructura básica, el CSS y el JS. Tiene div vacíos (#form-container, #template-container).
+script.js se ejecuta cuando el DOM está listo.
+Usa la función loadHTML para buscar (fetch) el contenido de templates/form.html y templates/rayosx.html.
+Inserta el HTML obtenido dentro de los div correspondientes en index.html.
+Una vez que ambos archivos HTML se han cargado (usando Promise.all), se ejecuta initializeApp.
+initializeApp busca los elementos del formulario y la plantilla (que ahora existen en el DOM) y les añade los event listeners necesarios (como al botón "Actualizar Documento").
+La función updatePdfView funciona igual que antes, leyendo los valores del formulario y actualizando los span en la plantilla.
+style.css aplica los estilos a los elementos, sin importar si estaban en el index.html original o si se cargaron dinámicamente.
