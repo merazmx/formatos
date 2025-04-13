@@ -40,10 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const nombreInput = document.getElementById('nombre');
         const nssInput = document.getElementById('nss');
         const diagnosticoInput = document.getElementById('diagnostico');
-        const camaInput = document.getElementById('cama');
-        const medicoInput = document.getElementById('medico');
-        const fechaInput = document.getElementById('fecha'); // Reference to date input
-        const horaInput = document.getElementById('hora'); // Reference to time input
+        const camaInput = document.getElementById('cama'); // Input for Cama
+        const medicoSelect = document.getElementById('medico'); // Changed to select
+        const fechaInput = document.getElementById('fecha');
+        const horaInput = document.getElementById('hora');
         const ordinarioRadio = document.getElementById('ordinario');
         const urgenteRadio = document.getElementById('urgente');
 
@@ -51,19 +51,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const nombreDisplay = document.getElementById('pdf-nombre');
         const nssDisplay = document.getElementById('pdf-nss');
         const diagnosticoDisplay = document.getElementById('pdf-diagnostico');
-        const camaDisplay = document.getElementById('pdf-cama');
-        const medicoDisplay = document.getElementById('pdf-medico');
+        const camaDisplay = document.getElementById('pdf-cama'); // Display for Cama
+        const medicoDisplay = document.getElementById('pdf-medico'); // Display for Medico
         const fechaDisplay = document.getElementById('pdf-fecha');
         const horaDisplay = document.getElementById('pdf-hora');
-        const ordinarioDisplay = document.getElementById('pdf-ordinario');
-        const urgenteDisplay = document.getElementById('pdf-urgente');
+        const ordinarioDisplay = document.getElementById('pdf-ordinario'); // Display for Ordinario
+        const urgenteDisplay = document.getElementById('pdf-urgente'); // Display for Urgente
 
         // --- Check if all critical elements were found ---
-        // Added checks for fechaInput and horaInput
+        // Updated check for medicoSelect
         if (!form || !updateButton || !nombreInput || !nombreDisplay ||
-            !fechaInput || !horaInput /* ... add checks for other critical elements */) {
+            !camaInput || !medicoSelect || !fechaInput || !horaInput ||
+            !ordinarioRadio || !urgenteRadio || !camaDisplay || !medicoDisplay ||
+            !fechaDisplay || !horaDisplay || !ordinarioDisplay || !urgenteDisplay
+            /* ... add checks for other critical elements */) {
             console.error("Error: No se pudieron encontrar todos los elementos necesarios en el DOM después de cargar.");
-            // Display an error message to the user in the UI if desired
             const appContainer = document.getElementById('app-container');
             if (appContainer) {
                 appContainer.innerHTML = '<p class="text-red-600 font-bold text-center">Error crítico al inicializar la aplicación. Faltan elementos HTML.</p>';
@@ -74,54 +76,46 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- Set Current Date and Time ---
         try {
             const now = new Date();
-
-            // Format date as YYYY-MM-DD
             const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const month = String(now.getMonth() + 1).padStart(2, '0');
             const day = String(now.getDate()).padStart(2, '0');
             const formattedDate = `${year}-${month}-${day}`;
-
-            // Format time as HH:MM (24-hour)
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const formattedTime = `${hours}:${minutes}`;
-
-            // Set the values of the input fields
             fechaInput.value = formattedDate;
             horaInput.value = formattedTime;
-
         } catch (error) {
             console.error("Error setting current date and time:", error);
-            // Optionally inform the user or leave fields blank/default
-            // fechaInput.value = ''; // Clear value on error
-            // horaInput.value = ''; // Clear value on error
         }
 
         // --- Update Function ---
         function updatePdfView() {
-            // Get values from the text/date/time inputs
+            // Get values from the inputs/select
             const nombreValue = nombreInput.value.trim() || '[Nombre del paciente]';
             const nssValue = nssInput.value.trim() || '[Número de Seguridad Social]';
             const diagnosticoValue = diagnosticoInput.value.trim() || '[Diagnóstico médico]';
-            const camaValue = camaInput.value.trim() || '[No. Cama]';
-            const medicoValue = medicoInput.value.trim() || '[Nombre y Matrícula Médico]';
-            const fechaValue = fechaInput.value; // Read the value from the input
-            const horaValue = horaInput.value; // Read the value from the input
+            const camaValue = camaInput.value.trim(); // Get value, default is empty if input is empty
+            const medicoValue = medicoSelect.value || '[Nombre y Matrícula Médico]'; // Get selected value from dropdown
+            const fechaValue = fechaInput.value;
+            const horaValue = horaInput.value;
 
             // Update the text content of the display spans
             nombreDisplay.textContent = nombreValue;
             nssDisplay.textContent = nssValue;
             diagnosticoDisplay.textContent = diagnosticoValue;
+            // Update Cama: Show empty string if input is empty, otherwise show value.
+            // The CSS rule .pdf-field:empty::before adds a non-breaking space if empty.
             camaDisplay.textContent = camaValue;
             medicoDisplay.textContent = medicoValue;
 
-            // Format date if selected (using the value from the input)
+            // Format date if selected
             if (fechaValue) {
                 try {
                     // Input type="date" provides value in YYYY-MM-DD format, which is safe for Date constructor
                     // Adding T00:00:00 avoids potential timezone issues when only extracting day/month/year
                     const dateObj = new Date(fechaValue + 'T00:00:00');
-                    // Check if date is valid after parsing
+                     // Check if date is valid after parsing
                     if (isNaN(dateObj.getTime())) {
                        throw new Error("Invalid date value parsed");
                     }
@@ -137,20 +131,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 fechaDisplay.textContent = '[DD/MM/AAAA]';
             }
 
-            // Format time if selected (using the value from the input)
-            // Input type="time" provides value in HH:MM format
+            // Format time if selected
             horaDisplay.textContent = horaValue || '[HH:MM]';
 
             // Update the Ordinario/Urgente display based on radio button selection
+            // Changed display text to "XXX"
             if (ordinarioRadio.checked) {
-                ordinarioDisplay.textContent = 'XXXXXXXXX';
+                ordinarioDisplay.textContent = 'XXX'; // Changed from XXXXXXXXX
                 urgenteDisplay.textContent = '';
             } else if (urgenteRadio.checked) {
                 ordinarioDisplay.textContent = '';
-                urgenteDisplay.textContent = 'X';
+                urgenteDisplay.textContent = 'XXX'; // Changed from X
             } else {
-                // Default case if somehow neither is checked (though one is checked by default in HTML)
-                ordinarioDisplay.textContent = 'XXXXXXXXX';
+                // Default case
+                ordinarioDisplay.textContent = 'XXX'; // Changed from XXXXXXXXX
                 urgenteDisplay.textContent = '';
             }
         }
@@ -159,23 +153,19 @@ document.addEventListener('DOMContentLoaded', () => {
         updateButton.addEventListener('click', updatePdfView);
 
         // --- Initial Update ---
-        // Call once to set default values based on the form's initial state (now including current date/time)
         updatePdfView();
 
         console.log("Aplicación inicializada correctamente.");
     }
 
     // --- Load HTML and then Initialize ---
-    // Use Promise.all to wait for both form and template to load
     Promise.all([
         loadHTML(formUrl, formContainerId),
         loadHTML(templateUrl, templateContainerId)
     ]).then(() => {
-        // Both HTML snippets have been loaded (or failed), now try to initialize
         initializeApp();
     }).catch(error => {
          console.error("Error loading initial HTML templates:", error);
-         // Display a general error message if needed
          const appContainer = document.getElementById('app-container');
          if(appContainer) {
              appContainer.innerHTML = '<p class="text-red-600 font-bold text-center">Error al cargar los componentes de la aplicación.</p>';
