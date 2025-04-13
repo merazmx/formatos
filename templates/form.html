@@ -1,1 +1,47 @@
+    <aside>
+        <h3>Datos del Formulario</h3>
+        <form id="pdf-form" onsubmit="return false;">
+            <div>
+                <label for="nombre">Nombre Completo:</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Ingrese el nombre completo">
+            </div>
+            <div>
+                <label for="nss">NSS:</label>
+                <input type="text" id="nss" name="nss" placeholder="Ingrese el NSS">
+            </div>
+             <div>
+                <label for="diagnostico">Diagnóstico:</label>
+                <input type="text" id="diagnostico" name="diagnostico" placeholder="Ingrese el diagnóstico">
+            </div>
+             <div>
+                <label for="cama">Cama:</label>
+                <input type="text" id="cama" name="cama" placeholder="Ingrese número de cama">
+            </div>
+             <div>
+                <label for="medico">Médico:</label>
+                <input type="text" id="medico" name="medico" placeholder="Ingrese nombre del médico y matrícula">
+            </div>
+            <div>
+                <label for="fecha">Fecha:</label>
+                <input type="date" id="fecha" name="fecha">
+            </div>
+             <div>
+                <label for="hora">Hora:</label>
+                <input type="time" id="hora" name="hora">
+            </div>
 
+            <div class="radio-group mt-4 mb-2">
+                 <label class="block mb-2 font-semibold text-gray-700">Tipo de Solicitud:</label>
+                 <div>
+                     <input type="radio" id="ordinario" name="tipo_solicitud" value="ordinario" checked>
+                     <label for="ordinario" class="radio-label">Ordinario</label>
+                 </div>
+                 <div>
+                     <input type="radio" id="urgente" name="tipo_solicitud" value="urgente">
+                     <label for="urgente" class="radio-label">Urgente</label>
+                 </div>
+            </div>
+            <button type="button" id="update-button">Actualizar Documento</button>
+        </form>
+    </aside>
+    
